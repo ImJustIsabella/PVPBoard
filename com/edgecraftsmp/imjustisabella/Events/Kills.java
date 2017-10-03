@@ -2,7 +2,7 @@ package com.edgecraftsmp.imjustisabella.Events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.edgecraftsmp.imjustisabella.Main;
 import com.edgecraftsmp.imjustisabella.Data.playerStatistics;
@@ -16,22 +16,13 @@ public class Kills {
 	}
 
 	@EventHandler
-	public void onKill(EntityDamageByEntityEvent event)
+	public void onDeath(PlayerDeathEvent event)
 	{
-		if(event.getDamager() instanceof Player)
-		{
-			Player attacker = (Player) event.getDamager();
-			if(event.getEntity() instanceof Player)
-			{
-				Player victim = (Player) event.getEntity();
-				if(victim.isDead())
-				{
-					playerStatistics stats = new playerStatistics(attacker);
-					boardView scoreboard = new boardView(attacker);
-					stats.addKill();
-					scoreboard.displayBoard();
-				}
-			}
-		}
+		Player attacker = event.getEntity().getKiller();
+	
+		playerStatistics stats = new playerStatistics(attacker);
+		boardView scoreboard = new boardView(attacker);
+		stats.addKill();
+		scoreboard.displayBoard();
 	}
 }
