@@ -1,6 +1,9 @@
 package com.edgecraftsmp.imjustisabella.Scoreboard;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -38,38 +41,51 @@ public class boardView {
 		Lines = 16;
 		Blanks = 0;
 		
-		for(int i = 0; i < Main.scoreboard.getInt("Rows"); i++)
+		List<String> list = Main.scoreboard.getStringList("Rows");
+		
+		this.Internal = -1;
+		for(int i = 0; i < list.size(); i++)
 		{
+			this.Internal++;
 			addLine();
 		}
 		
 		this.player.setScoreboard(this.board);
 	}
 	
+	public void hideBoard()
+	{
+		this.player.setScoreboard(this.board);
+	}
+	
 	private int Lines = 16;
 	private int Blanks = 0;
-	
+	private int Internal = -1;
 	
 	private void addLine()
 	{
-		String line = Main.scoreboard.getString(Integer.toString(Lines));
-		
-		if(line.equalsIgnoreCase(""))
+		if(this.Lines >= 1)
 		{
-			this.Blanks++;
-			line = "";
-			for(int i = 0; i < this.Blanks; i++)
+			List<String> list = Main.scoreboard.getStringList("Rows");
+			
+			String line = list.get(this.Internal);
+			
+			if(line.equalsIgnoreCase(""))
 			{
-				line = line + "&a";
+				this.Blanks++;
+				for(int i = 0; i < this.Blanks; i++)
+				{
+					line = line + "&a";
+				}
 			}
+			
+			String replaced = replacement(line);
+			
+			Score new_row = this.objective.getScore(replaced);
+			new_row.setScore(this.Lines);
+			
+			this.Lines--;
 		}
-		
-		String replaced = replacement(line);
-		
-		Score new_row = this.objective.getScore(replaced);
-		new_row.setScore(this.Lines);
-		
-		this.Lines--;
 	}
 	
 	public String replacement(String line)
@@ -82,32 +98,8 @@ public class boardView {
 		message = message.replace("<Deaths>", Integer.toString(stats.getDeaths()));
 		message = message.replace("<KDR>", Double.toString(stats.getKDR()));
 		message = message.replace("<onlineCount>", Integer.toString(Bukkit.getServer().getOnlinePlayers().size()));
-		
-		message = message.replace("&1", "§1");
-		message = message.replace("&2", "§2");
-		message = message.replace("&3", "§3");
-		message = message.replace("&4", "§4");
-		message = message.replace("&5", "§5");
-		message = message.replace("&6", "§6");
-		message = message.replace("&7", "§7");
-		message = message.replace("&8", "§8");
-		message = message.replace("&9", "§9");
-		message = message.replace("&0", "§0");
-		
-		message = message.replace("&a", "§a");
-		message = message.replace("&b", "§b");
-		message = message.replace("&c", "§c");
-		message = message.replace("&d", "§d");
-		message = message.replace("&e", "§e");
-		message = message.replace("&f", "§f");
-
-	
-		message = message.replace("&k", "§k");
-		message = message.replace("&l", "§l");
-		message = message.replace("&m", "§m");
-		message = message.replace("&n", "§n");
-		message = message.replace("&o", "§o");
-		message = message.replace("&r", "§r");
+		message = message.replace("<playerName>", this.player.getName().toString());
+		message = ChatColor.translateAlternateColorCodes('&', message);
 		
 		return message;
 	}
