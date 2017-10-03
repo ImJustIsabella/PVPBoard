@@ -23,11 +23,5 @@ public class Deaths implements Listener {
 		
 		boardView scoreboard = new boardView(event.getEntity());
 		scoreboard.displayBoard();
-		
-		playerStatistics data2 = new playerStatistics(event.getEntity().getKiller());
-		data2.addKill();
-		
-		boardView scoreboard2 = new boardView(event.getEntity().getKiller());
-		scoreboard2.displayBoard();
 	}
 }
